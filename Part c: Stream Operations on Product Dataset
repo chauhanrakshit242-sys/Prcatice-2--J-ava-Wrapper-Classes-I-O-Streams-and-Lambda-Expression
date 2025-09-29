@@ -1,0 +1,47 @@
+import java.util.*;
+import java.util.stream.*;
+import java.util.Comparator;
+
+class Product {
+    String name;
+    double price;
+    String category;
+
+    Product(String name, double price, String category) {
+        this.name = name;
+        this.price = price;
+        this.category = category;
+    }
+
+    @Override
+    public String toString() {
+        return name + " | " + price + " | " + category;
+    }
+}
+
+public class ProductStream {
+    public static void main(String[] args) {
+        List<Product> products = Arrays.asList(
+            new Product("Laptop", 60000, "Electronics"),
+            new Product("Phone", 40000, "Electronics"),
+            new Product("Shirt", 1500, "Clothing"),
+            new Product("Jeans", 2000, "Clothing"),
+            new Product("Blender", 3000, "Home Appliances")
+        );
+
+        Map<String, List<Product>> groupByCategory = products.stream()
+                .collect(Collectors.groupingBy(p -> p.category));
+        System.out.println("Grouped by Category: " + groupByCategory);
+
+        Map<String, Optional<Product>> maxPricePerCategory = products.stream()
+                .collect(Collectors.groupingBy(
+                        p -> p.category,
+                        Collectors.maxBy(Comparator.comparingDouble(p -> p.price))
+                ));
+        System.out.println("Most Expensive Product per Category: " + maxPricePerCategory);
+
+        double avgPrice = products.stream()
+                .collect(Collectors.averagingDouble(p -> p.price));
+        System.out.println("Average Price: " + avgPrice);
+    }
+}
